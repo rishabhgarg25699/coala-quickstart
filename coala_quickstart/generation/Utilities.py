@@ -1,9 +1,11 @@
 import inspect
 import os
 from collections import defaultdict
+import re
 
 from coala_utils.Extensions import exts
 from coala_utils.string_processing import unescaped_search_for
+from coala_quickstart.Constants import HASHBANG_REGEX
 
 
 def is_glob_exp(line):
@@ -92,7 +94,16 @@ def split_by_language(project_files):
             for lang in exts[ext]:
                 lang_files[lang.lower()].add(file)
                 lang_files['all'].add(file)
-
+        else:
+            with open(file, 'r') as data:
+                hashbang = data.readline()
+                if(re.match(HASHBANG_REGEX, hashbang)):
+                    language = get_language_from_hashbang(hashbang).lower()
+                    for ext in exts:
+                        for lang in exts[ext]:
+                            if language == lang.lower():
+                                lang_files[lang.lower()].add(file)
+                                lang_files['all'].add(file)
     return lang_files
 
 
@@ -161,3 +172,15 @@ def search_for_orig(decorated, orig_name):
             if hasattr(obj, '__closure__') and obj.__closure__:
                 found = search_for_orig(obj, orig_name)
                 return found
+
+
+def get_language_from_hashbang(hashbang):
+    if(re.match('(^#!(.*))', hashbang)):
+        hashbang_contents = hashbang.split(' ')
+        try:
+            # For eg: #!bin/bash python3
+            return hashbang_contents[1]
+        except IndexError:
+            # For eg: #!bin/bash
+            hashbang_element = hashbang_contents[0].split('/')
+            return (hashbang_element[len(hashbang_element)-1])

@@ -6,7 +6,7 @@ from tests.test_bears.AllKindsOfSettingsDependentBear import (
     AllKindsOfSettingsDependentBear)
 from coala_quickstart.generation.Utilities import (
     get_default_args, get_all_args,
-    search_for_orig)
+    search_for_orig, get_language_from_hashbang)
 
 
 def foo():
@@ -67,3 +67,9 @@ class TestAdditionalFunctions(unittest.TestCase):
                           'use_tabs': False, 'max_line_lengths': 1000,
                           'no_chars': 79,
                           'chars': False, 'dependency_results': {}})
+
+    def test_get_language_from_hashbang(self):
+        self.assertEqual(get_language_from_hashbang('#!/usr/bin/env python'),
+                         'python')
+        self.assertEqual(get_language_from_hashbang('#!bin/bash'),
+                         'bash')

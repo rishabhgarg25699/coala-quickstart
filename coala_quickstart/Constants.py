@@ -41,3 +41,5 @@ DEFAULT_CAPABILTIES = {
     'Code Simplification',
     'Complexity',
 }
+
+HASHBANG_REGEX = '(^#!(.*))'
