@@ -67,12 +67,35 @@ ignore.c
 __pycache__
 # End of gitignore""")
 
+        os.makedirs("another_folder", exist_ok=True)
+        os.chdir("another_folder")
+        with open('.gitignore', 'w') as f:
+            f.write("""
+# Start of gitignore
+*.js
+# End of gitignore""")
+        os.chdir(os.path.dirname(os.path.realpath(__file__)))
+        os.chdir("file_globs_gitignore_testfiles")
+        os.makedirs("data", exist_ok=True)
+        os.chdir("data")
+        os.makedirs("sample", exist_ok=True)
+        os.chdir("sample")
+        with open('.gitignore', 'w') as f:
+            f.write("""
+# Start of gitignore
+*.html
+# End of gitignore""")
+        os.chdir(os.path.dirname(os.path.realpath(__file__)))
+        os.chdir("file_globs_gitignore_testfiles")
         files = [os.path.join("src", "main.c"),
                  os.path.join("src", "main.h"),
                  os.path.join("src", "lib", "ssl.c"),
                  os.path.join("src", "tests", "main.c"),
                  os.path.join("src", "main.py"),
                  os.path.join("src", "upload.c"),
+                 os.path.join("another_folder", "another_file.c"),
+                 os.path.join("data", "sample", "index.css"),
+                 os.path.join("data", "example.py"),
                  ".coafile"]
         ignored_files = [os.path.join("build", "main.c"),
                          os.path.join("tests", "run.c"),
@@ -82,14 +105,21 @@ __pycache__
                          "globexp.py",
                          "upload.c",
                          os.path.join("src", "main.pyc"),
+                         os.path.join("another_folder", "script.js"),
+                         os.path.join("data", "sample", "index.html"),
                          "run.pyc"]
 
         for file in files + ignored_files:
             os.makedirs(os.path.dirname(os.path.abspath(file)), exist_ok=True)
             open(file, "w").close()
         files += [".gitignore"]
+        files += [os.path.join("another_folder", ".gitignore")]
+        files += [os.path.join("data", "sample", ".gitignore")]
 
-        globs = list(get_gitignore_glob(os.getcwd()))
+        gitignore_dir_list = [os.getcwd(),
+                              os.path.join(os.getcwd(), "another_folder"),
+                              os.path.join(os.getcwd(), "data", "sample")]
+        globs = list(get_gitignore_glob(os.getcwd(), gitignore_dir_list))
         returned_files = collect_files(
             [os.path.join(os.getcwd(), "**")],
             self.log_printer,
@@ -107,6 +137,8 @@ __pycache__
                                          self.file_path_completer)[0]),
                 sorted(files))
 
+        os.remove(os.path.join("another_folder", ".gitignore"))
+        os.remove(os.path.join("data", "sample", ".gitignore"))
         os.remove(".gitignore")
         os.chdir(orig_cwd)
 
