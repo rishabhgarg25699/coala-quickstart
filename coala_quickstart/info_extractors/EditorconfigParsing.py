@@ -403,8 +403,9 @@ def translate_editorconfig_section_to_regex(pat, nested=False):
                     result += "([+-]?\d+)"
                 else:
                     inner_result, inner_groups = (
-                        self.translate_pattern_to_regex(pat[index:pos],
-                                                        nested=True))
+                            translate_editorconfig_section_to_regex(
+                                pat[index:pos],
+                                nested=True))
                     result += '\\{%s\\}' % (inner_result,)
                     numeric_groups += inner_groups
                 index = pos + 1
