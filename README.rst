@@ -51,10 +51,18 @@ To install the latest development version run:
 
 .. code-block:: bash
 
-    $ pip3 install coala-quickstart --pre
+    $ git clone https://github.com/coala/coala-quickstart
+    $ cd coala-quickstart
+    $ pip3 install . 
 
-The latest code from the master branch is automatically deployed as the
-development version in PyPI.
+Use the ``-e`` tag to install ``coala-quickstart`` in the editable mode which
+will allow you to make changes to the local repository and have them
+take effect in ``coala-quickstart`` immediately. For that, use the last
+commmand as:
+
+.. code-block:: bash
+
+    $ pip3 install -e .
 
 |PyPI| |Windows| |Linux|
 
