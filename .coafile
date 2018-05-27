@@ -18,6 +18,13 @@ default_actions =
     SpaceConsistencyBear: ApplyPatchAction,
     PyUnusedCodeBear: ApplyPatchAction
 
+[all.quotes]
+bears = QuotesBear
+language = Python
+preferred_quotation = '
+default_actions = **: ApplyPatchAction
+ignore += tests/**
+
 [all.autopep8]
 bears = PEP8Bear, PycodestyleBear
 pycodestyle_ignore = E121, E123, E126, E226, E252, W503, W504, W605
