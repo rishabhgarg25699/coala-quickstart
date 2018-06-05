@@ -1,3 +1,4 @@
+import inspect
 import os
 from collections import defaultdict
 
@@ -111,3 +112,52 @@ def get_extensions(project_files):
                 extset[lang.lower()].add(ext)
 
     return extset
+
+
+def get_default_args(func):
+    """
+    :param func: Function name.
+    :return:
+        A dict of function paramters as keys
+        and default values as value if default values exist.
+    """
+    signature = inspect.signature(func)
+    return {
+        k: v.default
+        for k, v in signature.parameters.items()
+        if v.default is not inspect.Parameter.empty
+    }
+
+
+def get_all_args(func):
+    """
+    :param func: Function name.
+    :return:
+        A dict of function paramters as keys
+        and default values as value.
+    """
+    signature = inspect.signature(func)
+    return {
+        k: v.default
+        for k, v in signature.parameters.items()
+    }
+
+
+def search_for_orig(decorated, orig_name):
+    """
+    Extracts out the original function if the function is decorated with
+    one or more decorators.
+    :param decorated:
+        The decorated function object.
+    :param orig_name:
+        The name of the original function.
+    :return:
+        None or the original function object.
+    """
+    if decorated.__closure__ is not None:
+        for obj in (c.cell_contents for c in decorated.__closure__):
+            if hasattr(obj, '__name__') and obj.__name__ == orig_name:
+                return obj
+            if hasattr(obj, '__closure__') and obj.__closure__:
+                found = search_for_orig(obj, orig_name)
+                return found
