@@ -57,6 +57,9 @@ def filter_relevant_bears(used_languages,
     candidate_bears = copy.copy(bears_by_lang)
     to_propose_bears = {}
 
+    if args.green_mode:
+        return candidate_bears
+
     # Initialize selected_bears with IMPORTANT_BEAR_LIST
     for lang, lang_bears in candidate_bears.items():
         if lang_bears and lang in IMPORTANT_BEAR_LIST:

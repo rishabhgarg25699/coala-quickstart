@@ -14,6 +14,7 @@ from coala_quickstart.coala_quickstart import _get_arg_parser
 from coala_quickstart.Constants import (
     IMPORTANT_BEAR_LIST, ALL_CAPABILITIES)
 from coala_quickstart.generation.InfoCollector import collect_info
+from coalib.collecting.Collectors import get_all_bears
 from tests.TestUtilities import bear_test_module, generate_files
 
 
@@ -129,6 +130,23 @@ class TestBears(unittest.TestCase):
         self.assertIn("Python", res)
         self.assertTrue(len(res["C"]) > 0)
         self.assertTrue(len(res["Python"]) > 0)
+
+    def test_filter_relevant_bears_green_mode(self):
+        from argparse import Namespace
+        invalid_bears = ['DocGrammarBear', 'DocumentationStyleBear']
+        self.arg_parser.parse_args = unittest.mock.MagicMock(
+            return_value=Namespace(green_mode=True))
+        res = filter_relevant_bears([('Python', 70), ('C', 20)],
+                                    self.printer,
+                                    self.arg_parser,
+                                    {})
+        for lang in res:
+            result = list(filter(lambda x: next((
+                False for bear in invalid_bears if bear in str(x)), True),
+                                 list(res[lang])))
+            to_compare = list(filter(lambda x: lang in x.LANGUAGES,
+                                     get_all_bears()))
+            self.assertCountEqual(result, to_compare)
 
     def test_filter_relevant_bears_with_extracted_info(self):
         # results without extracted information

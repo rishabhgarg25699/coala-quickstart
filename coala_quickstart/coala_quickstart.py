@@ -21,6 +21,8 @@ from coala_quickstart.generation.Bears import (
 )
 from coala_quickstart.generation.Settings import (
     generate_settings, write_coafile)
+from coala_quickstart.generation.SettingsClass import (
+    collect_bear_settings)
 
 
 def _get_arg_parser():
@@ -54,6 +56,12 @@ coala-quickstart automatically creates a .coafile for use by coala.
         dest='no_filter_by_capabilities', const=True,
         help='disable filtering of bears by their capabilties.')
 
+    arg_parser.add_argument(
+        '-g', '--green-mode', const=True, action='store_const',
+        help='Produce "green" config files for you project. Green config files'
+             'don\'t generate any error in the project and match the coala'
+             'configuration as closely as possible to your project.')
+
     return arg_parser
 
 
@@ -68,7 +76,12 @@ def main():
     fpc = None
     project_dir = os.getcwd()
 
-    if not args.non_interactive:
+    if args.green_mode:
+        args.non_interactive = None
+        args.no_filter_by_capabilities = None
+        args.incomplete_sections = None
+
+    if not args.non_interactive and not args.green_mode:
         fpc = FilePathCompleter()
         fpc.activate()
         print_welcome_message(printer)
@@ -92,6 +105,9 @@ def main():
 
     relevant_bears = filter_relevant_bears(
         used_languages, printer, arg_parser, extracted_information)
+
+    if args.green_mode:
+        collect_bear_settings(relevant_bears)
 
     print_relevant_bears(printer, relevant_bears)
 
