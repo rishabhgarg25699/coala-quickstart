@@ -26,6 +26,12 @@ WELCOME_MESSAGES = ['Hi there! Awesome you decided to do some high '
                     "We can help you with that. Let's get started with "
                     'some basic questions.']
 
+PROJECT_DIR_HELP = """
+Enter the directory whose contents you want to analyse.
+For example, you may want to include your src/ folder.
+To do this, simply enter `src/`. To select the present
+directory simply press enter and continue.
+"""
 
 GLOB_HELP_URL = 'http://coala.readthedocs.io/en/latest/Users/Glob_Patterns.html'
 GLOB_HELP = """
@@ -34,10 +40,8 @@ number of files. You may give multiple file globs
 separated by commas. To learn more about glob patterns
 please visit: {}
 
-For example, you may want to include your src/ folder and
-all its contents but exclude your .git directory and all
-.o files. To do this, simply give `src/` for the first
-question and `.git/**,**/*.o` for the second question.
+For example, you may want to exclude your .git directory and all
+.o files. To do this, simply give `.git/**,**/*.o` for this question.
 """.format(GLOB_HELP_URL)
 
 BEAR_DOCS_URL = ('https://github.com/coala/bear-docs/blob/master/'

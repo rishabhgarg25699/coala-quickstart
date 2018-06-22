@@ -4,6 +4,7 @@ from pyprint.ConsolePrinter import ConsolePrinter
 from coala_utils.ContextManagers import retrieve_stdout
 from coala_quickstart.interaction.Logo import (
     print_welcome_message, print_side_by_side)
+from coala_quickstart.Strings import PROJECT_DIR_HELP
 
 
 class TestLogo(unittest.TestCase):
@@ -28,3 +29,8 @@ class TestLogo(unittest.TestCase):
         with retrieve_stdout() as custom_stdout:
             print_welcome_message(self.printer)
             self.assertIn("o88Oo", custom_stdout.getvalue())
+
+    def test_print_ask_dir_help_message(self):
+        with retrieve_stdout() as custom_stdout:
+            self.printer.print(PROJECT_DIR_HELP)
+            self.assertIn(PROJECT_DIR_HELP, custom_stdout.getvalue())

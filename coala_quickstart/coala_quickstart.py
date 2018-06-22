@@ -13,6 +13,7 @@ from coala_quickstart.generation.InfoCollector import collect_info
 from coala_quickstart.generation.Project import (
     valid_path, get_used_languages, print_used_languages)
 from coala_quickstart.generation.FileGlobs import get_project_files
+from coala_quickstart.Strings import PROJECT_DIR_HELP
 from coala_quickstart.generation.Bears import (
     filter_relevant_bears,
     print_relevant_bears,
@@ -85,6 +86,7 @@ def main():
         fpc = FilePathCompleter()
         fpc.activate()
         print_welcome_message(printer)
+        printer.print(PROJECT_DIR_HELP)
         project_dir = ask_question(
             'What is your project directory?',
             default=project_dir,

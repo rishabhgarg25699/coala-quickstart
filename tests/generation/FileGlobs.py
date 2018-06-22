@@ -3,11 +3,12 @@ import unittest
 
 from pyprint.ConsolePrinter import ConsolePrinter
 from coala_utils.ContextManagers import (
-    simulate_console_inputs, suppress_stdout)
+    simulate_console_inputs, suppress_stdout, retrieve_stdout)
 from coala_utils.FilePathCompleter import FilePathCompleter
 from coala_quickstart.generation.FileGlobs import get_project_files
 from coala_quickstart.generation.Utilities import get_gitignore_glob
 from coalib.collecting.Collectors import collect_files
+from coala_quickstart.Strings import GLOB_HELP
 
 
 class TestQuestion(unittest.TestCase):
@@ -30,11 +31,13 @@ class TestQuestion(unittest.TestCase):
         open(os.path.join("ignore_dir", "src.c"), "w").close()
         open(os.path.join("ignore_dir", "src.js"), "w").close()
 
-        with suppress_stdout(), simulate_console_inputs("ignore_dir/**"):
+        with retrieve_stdout() as custom_stdout, \
+                simulate_console_inputs("ignore_dir/**"):
             res, _ = get_project_files(self.log_printer,
                                        self.printer,
                                        os.getcwd(),
                                        self.file_path_completer)
+            self.assertIn(GLOB_HELP, custom_stdout.getvalue())
             self.assertIn(os.path.normcase(
                 os.path.join(os.getcwd(), "src", "file.c")), res)
             self.assertIn(os.path.normcase(
