@@ -52,10 +52,14 @@ class TestSettingsClass(unittest.TestCase):
                                                     'no_lines'])
         obj = bear_settings_obj[k].optional_settings
         self.assertCountEqual(obj.settings_bool, ['use_spaces', 'use_tabs',
-                                                  'chars'])
+                                                  'chars', 'use_space',
+                                                  'use_tab'])
         self.assertCountEqual(obj.settings_others, ['max_line_lengths',
                                                     'no_chars',
-                                                    'dependency_results'])
+                                                    'dependency_results',
+                                                    'dependency_result',
+                                                    'no_char',
+                                                    'max_line_length'])
 
         # The following test is for testing out the sorting of settings
         # into Type bool and other Types using the test bear
@@ -80,10 +84,14 @@ class TestSettingsClass(unittest.TestCase):
                                                     'no_lines'])
         obj = bear_settings_obj[k].optional_settings
         self.assertCountEqual(obj.settings_bool, ['use_spaces', 'use_tabs',
-                                                  'chars'])
+                                                  'chars', 'use_space',
+                                                  'use_tab'])
         self.assertCountEqual(obj.settings_others, ['max_line_lengths',
                                                     'no_chars',
-                                                    'dependency_results'])
+                                                    'dependency_results',
+                                                    'dependency_result',
+                                                    'no_char',
+                                                    'max_line_length'])
 
         # The following test is for testing out the sorting of settings
         # into Type bool and other Types using the test bear
@@ -108,8 +116,8 @@ class TestSettingsClass(unittest.TestCase):
         # The following test is for testing out the sorting of settings
         # into Type bool and other Types using the test bear
         # BearA. This bear is dependent on BearB which is further dependent
-        # on BearC to test out that non-optional settings from BearC
-        # are appearring over here and the parsing of the bear dependency
+        # on BearC to test out that settings from BearC
+        # are appearing over here and the parsing of the bear dependency
         # tree is done right.
 
         for index, i in enumerate(bear_settings_obj):
@@ -121,7 +129,7 @@ class TestSettingsClass(unittest.TestCase):
         self.assertCountEqual(obj.settings_others, [])
         obj = bear_settings_obj[k].optional_settings
         self.assertCountEqual(obj.settings_bool, [])
-        self.assertCountEqual(obj.settings_others, [])
+        self.assertCountEqual(obj.settings_others, ['a'])
 
         # The following tests are for testing out the sorting of settings
         # into Type bool and other Types using the test bears
