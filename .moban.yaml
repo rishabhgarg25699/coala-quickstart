@@ -9,6 +9,7 @@ build_version: 0.4.0
 package_module: coala_quickstart
 url: https://github.com/coala/coala-quickstart
 docs_dir: false
+test_py36: false
 
 maintainers: false
 maintainer_list:
@@ -38,6 +39,7 @@ dependencies:
 configuration:
   template_dir:
     - ../coala-mobans/templates/
+    - ../coala-mobans/assets/
   configuration: .moban.yaml
   configuration_dir: ../coala-mobans/
 targets:
@@ -46,3 +48,5 @@ targets:
   - test-requirements.txt: test-requirements.txt.jj2
   - coala_quickstart/VERSION: VERSION.jj2
   - coala_quickstart/__init__.py: __init__.py.jj2
+  - .ci/appveyor.yml: ci/appveyor.yml.jj2
+  - .ci/run_with_env.cmd: run_with_env.cmd
