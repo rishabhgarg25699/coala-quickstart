@@ -25,6 +25,10 @@ from coala_quickstart.generation.Settings import (
     generate_settings, write_coafile)
 from coala_quickstart.generation.SettingsClass import (
     collect_bear_settings)
+from coala_quickstart.green_mode.green_mode_core import green_mode
+
+MAX_NUM_OF_OPTIONAL_ARGS_ALLOWED_FOR_GREEN_MODE = 5
+MAX_NUM_OF_VALUES_OF_OPTIONAL_ARGS_ALLOWED_FOR_GREEN_MODE = 5
 
 
 def _get_arg_parser():
@@ -110,7 +114,12 @@ def main():
         used_languages, printer, arg_parser, extracted_information)
 
     if args.green_mode:
-        collect_bear_settings(relevant_bears)
+        bear_settings_obj = collect_bear_settings(relevant_bears)
+        green_mode(
+            project_dir, ignore_globs, relevant_bears, bear_settings_obj,
+            MAX_NUM_OF_OPTIONAL_ARGS_ALLOWED_FOR_GREEN_MODE,
+            MAX_NUM_OF_VALUES_OF_OPTIONAL_ARGS_ALLOWED_FOR_GREEN_MODE,
+            printer)
 
     print_relevant_bears(printer, relevant_bears)
 

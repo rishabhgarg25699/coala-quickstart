@@ -6,9 +6,12 @@ import unittest
 from tests.test_bears.AllKindsOfSettingsDependentBear import (
     AllKindsOfSettingsDependentBear)
 from coala_quickstart.generation.Utilities import (
+    contained_in,
     get_default_args, get_all_args,
     search_for_orig, concatenate, peek,
     get_language_from_hashbang)
+from coalib.results.SourcePosition import SourcePosition
+from coalib.results.SourceRange import SourceRange
 
 
 def foo():
@@ -117,3 +120,106 @@ class TestDataStructuresOperationsFunctions(unittest.TestCase):
 
         self.assertEqual(ret_val, None)
         self.assertEqual(ret_val_1, None)
+
+
+class TestContainedIn(unittest.TestCase):
+
+    def test_contained_in_1(self):
+        start = SourcePosition('a.py', line=1, column=5)
+        end = SourcePosition('a.py', line=5, column=1)
+        smaller = SourceRange(start, end)
+
+        start = SourcePosition('a.py', line=1, column=5)
+        end = SourcePosition('a.py', line=5, column=2)
+        bigger = SourceRange(start, end)
+        self.assertTrue(contained_in(smaller, bigger))
+
+        start = SourcePosition('a.py', line=1, column=4)
+        end = SourcePosition('a.py', line=5, column=1)
+        bigger = SourceRange(start, end)
+        self.assertTrue(contained_in(smaller, bigger))
+
+        start = SourcePosition('a.py', line=1, column=5)
+        end = SourcePosition('a.py', line=5, column=1)
+        bigger = SourceRange(start, end)
+        self.assertTrue(contained_in(smaller, bigger))
+
+    def test_contained_in_2(self):
+        start = SourcePosition('a.py', line=1, column=5)
+        end = SourcePosition('a.py', line=5, column=1)
+        smaller = SourceRange(start, end)
+
+        start = SourcePosition('a.py', line=1, column=9)
+        end = SourcePosition('a.py', line=5, column=1)
+        bigger = SourceRange(start, end)
+        self.assertFalse(contained_in(smaller, bigger))
+
+        start = SourcePosition('a.py', line=1, column=6)
+        end = SourcePosition('a.py', line=4, column=2)
+        bigger = SourceRange(start, end)
+        self.assertFalse(contained_in(smaller, bigger))
+
+        start = SourcePosition('b.py', line=1, column=5)
+        end = SourcePosition('b.py', line=5, column=1)
+        bigger = SourceRange(start, end)
+        self.assertFalse(contained_in(smaller, bigger))
+
+    def test_contained_in_3(self):
+        start = SourcePosition('a.py', line=1, column=5)
+        end = SourcePosition('a.py', line=5, column=1)
+        smaller = SourceRange(start, end)
+
+        start = SourcePosition('a.py', line=2, column=5)
+        end = SourcePosition('a.py', line=5, column=1)
+        bigger = SourceRange(start, end)
+        self.assertFalse(contained_in(smaller, bigger))
+
+    def test_contained_in_4(self):
+        start = SourcePosition('a.py', line=3, column=5)
+        end = SourcePosition('a.py', line=5, column=1)
+        smaller = SourceRange(start, end)
+
+        start = SourcePosition('a.py', line=1, column=5)
+        end = SourcePosition('a.py', line=6, column=1)
+        bigger = SourceRange(start, end)
+        self.assertTrue(contained_in(smaller, bigger))
+
+        start = SourcePosition('a.py', line=3, column=5)
+        end = SourcePosition('a.py', line=6, column=1)
+        bigger = SourceRange(start, end)
+        self.assertTrue(contained_in(smaller, bigger))
+
+    def test_contained_in_5(self):
+        start = SourcePosition('a.py', line=3, column=5)
+        end = SourcePosition('a.py', line=5, column=1)
+        smaller = SourceRange(start, end)
+
+        start = SourcePosition('a.py', line=2, column=5)
+        end = SourcePosition('a.py', line=5, column=1)
+        bigger = SourceRange(start, end)
+        self.assertTrue(contained_in(smaller, bigger))
+
+        start = SourcePosition('a.py', line=3, column=8)
+        end = SourcePosition('a.py', line=7, column=1)
+        bigger = SourceRange(start, end)
+        self.assertFalse(contained_in(smaller, bigger))
+
+    def test_contained_in_6(self):
+        start = SourcePosition('a.py', line=3, column=5)
+        end = SourcePosition('a.py', line=5, column=7)
+        smaller = SourceRange(start, end)
+
+        start = SourcePosition('a.py', line=3, column=5)
+        end = SourcePosition('a.py', line=5, column=6)
+        bigger = SourceRange(start, end)
+        self.assertFalse(contained_in(smaller, bigger))
+
+        start = SourcePosition('a.py', line=2, column=8)
+        end = SourcePosition('a.py', line=5, column=1)
+        bigger = SourceRange(start, end)
+        self.assertFalse(contained_in(smaller, bigger))
+
+        start = SourcePosition('a.py', line=2, column=None)
+        end = SourcePosition('a.py', line=5, column=1)
+        bigger = SourceRange(start, end)
+        self.assertFalse(contained_in(smaller, bigger))

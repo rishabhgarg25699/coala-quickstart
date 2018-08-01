@@ -3,6 +3,7 @@ import itertools
 import os
 from collections import defaultdict
 import re
+import yaml
 
 from coala_utils.Extensions import exts
 from coala_utils.string_processing import unescaped_search_for
@@ -236,3 +237,125 @@ def peek(iterable):
     except StopIteration:
         return None
     return first, itertools.chain([first], iterable)
+
+
+def contained_in(smaller, bigger):
+    """
+    Takes in two SourceRange objects and checks whether
+    the first one lies inside the other one.
+    :param smaller:
+        The SourceRange object that needs to be checked whether
+        it is inside the other one.
+    :param bigger:
+        The SourceRange object that needs to be checked whether
+        it contains the other one.
+    :return:
+        True if smaller is inside the bigger else false.
+    """
+    smaller_file = smaller.start.file
+    bigger_file = bigger.start.file
+
+    smaller_start_line = smaller.start.line
+    smaller_start_column = smaller.start.column
+    smaller_end_line = smaller.end.line
+    smaller_end_column = smaller.end.column
+
+    bigger_start_line = bigger.start.line
+    bigger_start_column = bigger.start.column
+    bigger_end_line = bigger.end.line
+    bigger_end_column = bigger.end.column
+
+    if None in [smaller_start_line, smaller_start_column,
+                smaller_end_line, smaller_end_column,
+                bigger_start_line, bigger_start_column,
+                bigger_end_line, bigger_end_column]:
+        return False
+
+    if not smaller_file == bigger_file:
+        return False
+
+    if smaller_start_line < bigger_start_line:
+        return False
+
+    if smaller_end_line > bigger_end_line:
+        return False
+
+    if smaller_start_line > bigger_start_line and (
+            smaller_end_line < bigger_end_line):
+        return True
+
+    same_start_line = (smaller_start_line == bigger_start_line)
+
+    same_end_line = (smaller_end_line == bigger_end_line)
+
+    if same_start_line and same_end_line:
+        if smaller_start_column < bigger_start_column:
+            return False
+        if smaller_end_column > bigger_end_column:
+            return False
+        return True
+
+    if same_start_line:
+        if smaller_start_column < bigger_start_column:
+            return False
+        return True
+
+    assert same_end_line
+    if smaller_end_column > bigger_end_column:
+        return False
+    return True
+
+
+def get_yaml_contents(project_data):
+    """
+    Reads a YAML file and returns the data.
+    :param project_data:
+        The file path from which to read data.
+    :return:
+        The YAML data as python objects.
+    """
+    with open(project_data, 'r') as stream:
+        return yaml.load(stream)
+
+
+def dump_yaml_to_file(file, contents):
+    """
+    Writes YAML data to a file.
+    :param file:
+        The file to write YAML data to.
+    :param contents:
+        The python objects to be written as YAML data.
+    """
+    with open(file, 'w+') as outfile:
+        yaml.dump(contents, outfile,
+                  default_flow_style=False)
+
+
+def append_to_contents(contents, key, values, settings_key):
+    """
+    Appends data to a dict, adding the received values
+    to the list of values at a given key or creating
+    the key if it does not exist.
+    :param contents:
+        The dict to append data to.
+    :param key:
+        The key needed to be appended to the dict.
+    :param values:
+        The list of values needed to be appended to the
+        values at a key in the dict.
+    :param settings_key:
+        The key to which data has to be appended to.
+    :return:
+        The dict with appended key and values.
+    """
+    found = False
+    if settings_key not in contents:
+        contents[settings_key] = []
+    for index, obj in enumerate(contents[settings_key]):
+        if isinstance(obj, dict) and key in obj.keys():
+            found = True
+            contents[settings_key][index][key] += values
+    if not found:
+        contents[settings_key].append({key: values})
+
+    return contents

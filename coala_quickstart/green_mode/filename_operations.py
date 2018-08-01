@@ -25,7 +25,7 @@ class Node:
             self.children[ch].count += 1
         else:
             self.children[ch] = Node(string[idx], self)
-        self.children[ch].insert(string, idx+1)
+        self.children[ch].insert(string, idx + 1)
 
 
 class Trie:
@@ -72,7 +72,7 @@ class Trie:
         for ch, ch_node in node.children.items():
             prefix.append(node.character)
             if (not ch_node.count < node.count) or orig_prefix == []:
-                self._discover_prefixes(ch_node, prefix, min_length, len+1,
+                self._discover_prefixes(ch_node, prefix, min_length, len + 1,
                                         min_files)
             prefix.pop()
 
