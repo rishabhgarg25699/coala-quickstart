@@ -3,7 +3,7 @@ import unittest
 from coala_quickstart.info_extractors import Utilities
 
 
-class UtititiesTest(unittest.TestCase):
+class SearchObjectRecursivelyTest(unittest.TestCase):
 
     def setUp(self):
         self.simple_dict = {
@@ -48,6 +48,10 @@ class UtititiesTest(unittest.TestCase):
                 "key2.1": "value2.1"
             }
         }
+
+    def test_type_error(self):
+        with self.assertRaises(TypeError):
+            Utilities.search_object_recursively(1, 1)
 
     def test_search_object_recursively(self):
         uut = Utilities.search_object_recursively
