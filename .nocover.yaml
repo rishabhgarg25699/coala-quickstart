@@ -1,0 +1,46 @@
+overrides: coala.yaml
+
+allow_generic_no_cover: true
+
+nocover_file_globs:
+  # https://github.com/coala/coala-quickstart/issues/274
+  - coala_quickstart/generation/Bears.py
+  # https://github.com/coala/coala-quickstart/issues/273
+  - coala_quickstart/generation/FileGlobs.py
+  - coala_quickstart/info_extractors/EditorconfigInfoExtractor.py
+  # https://github.com/coala/coala-quickstart/issues/222
+  - coala_quickstart/info_extractors/EditorconfigParsing.py
+  - coala_quickstart/info_extractors/GemfileInfoExtractor.py
+  - coala_quickstart/info_extractors/GruntfileInfoExtractor.py
+
+nocover_regexes:
+  # coala_quickstart.py
+  - args.green_mode
+  # generation/InfoMapping.py
+  # https://github.com/coala/coala-quickstart/issues/275
+  - INFO_SETTING_MAPS =
+  # generation/Project.py
+  # https://github.com/coala/coala-quickstart/issues/276
+  - def language_percentage
+  # generation/Settings.py::write_coafile
+  # https://github.com/coala/coala-quickstart/issues/277
+  - 'if os.path.isfile\(coafile\):'
+  # generation/SettingsFilling.py
+  # https://github.com/coala/coala-quickstart/issues/278
+  - def autofill_value
+  - def is_autofill_possible
+  - def require_setting
+  # generation/Settings.py::get_extensions
+  # https://github.com/coala/coala-quickstart/issues/279
+  - if ext in exts
+  # generation/SettingsClass.py::fillup_optional_settings
+  # https://github.com/coala/coala-quickstart/issues/280
+  - if inside_annot
+  # generation/SettingsClass.py::BearSettings.__init__
+  - if hasattr.*generate_config
+  # generation/Utilities.py
+  # https://github.com/coala/coala-quickstart/issues/281
+  - def is_glob_exp
+  - def get_gitignore_glob
+  - def parse_gitignore_line
+  - def get_language_from_hashbang

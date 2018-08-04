@@ -59,7 +59,7 @@ def fill_section(section,
     for setting in needed_settings.keys():
         setting_bears = needed_settings[setting]['bears']
         setting_help_text = needed_settings[setting]['help_text']
-        to_fill_values = list(autofill_value_if_possible(
+        to_fill_values = list(autofill_value(
             setting, section, setting_bears, extracted_info))
 
         if len(set(to_fill_values)) == 1:
@@ -71,7 +71,7 @@ def fill_section(section,
                 setting, setting_help_text, setting_bears, to_fill_values)
             satisfied_settings.append(setting)
 
-        else:
+        else:  # pragma: no cover
             pass
 
     for setting in satisfied_settings:
@@ -86,10 +86,7 @@ def fill_section(section,
     return section
 
 
-def autofill_value_if_possible(setting_key,
-                               section,
-                               bears,
-                               extracted_information):
+def autofill_value(setting_key, section, bears, extracted_information):
     """
     For the given setting configurations, checks if there is a
     possiblity of filling the value from the extracted information,
@@ -121,10 +118,7 @@ def autofill_value_if_possible(setting_key,
                             yield mapping['mapper_function'](val)
 
 
-def is_autofill_possible(setting_key,
-                         section,
-                         bears,
-                         extracted_info):
+def is_autofill_possible(setting_key, section, bears, extracted_info):
     """
     Checks if it is possible to autofill the setting values.
     """
