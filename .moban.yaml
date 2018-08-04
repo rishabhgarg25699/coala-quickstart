@@ -51,3 +51,4 @@ targets:
   - coala_quickstart/__init__.py: __init__.py.jj2
   - .ci/appveyor.yml: ci/appveyor.yml.jj2
   - .ci/run_with_env.cmd: run_with_env.cmd
+  - .ci/check_moban.sh: ci/check_moban.sh

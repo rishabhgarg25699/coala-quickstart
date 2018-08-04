@@ -4,15 +4,32 @@ python:
   - 3.5
   - 3.6
 
+stages:
+  - test
+  - moban
+
+.disable_global: &disable_global
+  before_install: false
+  install: false
+  script: false
+
+.check_moban: &check_moban
+  <<: *disable_global
+  python: 3.6
+  stage: moban
+  install: pip install moban
+  script: .ci/check_moban.sh
+
+jobs:
+  include:
+    - *check_moban
+
 cache:
   pip: true
 
 before_install:
   - pip install setuptools -U
   - pip install -r requirements.txt -r test-requirements.txt
-  - git clone https://gitlab.com/coala/mobans ../coala-mobans
-  - moban
-  - git diff --exit-code
 
 script:
   - pytest
