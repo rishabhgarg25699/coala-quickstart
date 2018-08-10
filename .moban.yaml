@@ -10,6 +10,7 @@ package_module: coala_quickstart
 url: https://github.com/coala/coala-quickstart
 docs_dir: false
 test_py36: false
+test_timeout: 60
 
 maintainers: false
 maintainer_list:
