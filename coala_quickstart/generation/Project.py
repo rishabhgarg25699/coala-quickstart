@@ -6,7 +6,10 @@ import re
 from coala_utils.string_processing.StringConverter import StringConverter
 from coala_utils.Extensions import exts
 from coala_quickstart.generation.Utilities import get_language_from_hashbang
-from coala_quickstart.Constants import HASHBANG_REGEX
+from coala_quickstart.Constants import (
+    ASK_TO_SELECT_LANG,
+    HASHBANG_REGEX,
+    )
 
 
 def valid_path(path: StringConverter):
@@ -83,7 +86,54 @@ def get_used_languages(file_paths):
         reverse=True)
 
 
-def print_used_languages(printer, results):
+def ask_to_select_languages(languages, printer, non_interactive):
+    if non_interactive:
+        print_used_languages(printer, languages, non_interactive)
+        return languages
+    only_languages = []
+    percentages = []
+    max_length = -1
+    for language in languages:
+        only_languages.append(language[0])
+        percentages.append(language[1])
+        if len(language[0]) > max_length:
+            max_length = len(language[0])
+    total_options = len(only_languages) + 1
+    printer.print(ASK_TO_SELECT_LANG, color='yellow')
+    for idx, lang in enumerate(only_languages):
+        num_spaces = max_length - len(lang)
+        spaces = ''
+        for i in range(num_spaces):
+            spaces += ' '
+        printer.print(
+            '    {}. {}{} {:>2}%'.format(
+                idx + 1, lang, spaces, int(percentages[idx])), color='green')
+
+    selected_numbers = []
+    try:
+        selected_numbers = list(map(int, re.split('\D+', input())))
+    except Exception:
+        # Parsing failed, choose all the default capabilities
+        selected_numbers = [total_options]
+
+    selected_languages = []
+
+    for num in selected_numbers:
+        if num >= 0 and num < total_options:
+            selected_languages.append(languages[int(num) - 1])
+        elif num == total_options:
+            selected_languages = languages
+        else:
+            printer.print(
+                '{} is not a valid option. Please choose the right'
+                ' option numbers'.format(str(num)))
+            return ask_to_select_languages(languages,
+                                           printer, False)
+    print_used_languages(printer, languages, False)
+    return selected_languages
+
+
+def print_used_languages(printer, results, non_interactive=True):
     """
     Prints the sorted list of used languages along with each language's
     percentage use.
@@ -93,9 +143,16 @@ def print_used_languages(printer, results):
     :param results:
         A list of tuples containing a language name as the first value
         and percentage usage in the project as the second value.
+    :param non_interactive:
+        Variable that defines whether quickstart is in non_interactive
+        mode or not.
     """
-    printer.print(
-        'The following languages have been automatically detected:')
+    if non_interactive:
+        printer.print(
+            'The following languages have been automatically detected:\n')
+    else:
+        printer.print(
+            'The following languages have been selected by you:\n')
     for lang, percent in results:
         formatted_line = '{:>25}: {:>2}%'.format(lang, int(percent))
         printer.print(formatted_line, color='cyan')

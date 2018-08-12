@@ -144,8 +144,7 @@ class TestBears(unittest.TestCase):
                                     self.arg_parser,
                                     {})
         all_bears = get_filtered_bears(['Python', 'C'])[0]
-        bears = all_bears['all']
-        bears += all_bears['all.python']
+        bears = all_bears['cli']
         important_bears = []
 
         for bear_set in list(IMPORTANT_BEAR_LIST.values()):

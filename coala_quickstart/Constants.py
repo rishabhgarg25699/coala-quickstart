@@ -51,3 +51,9 @@ DEFAULT_CAPABILTIES = {
 }
 
 HASHBANG_REGEX = '(^#!(.*))'
+
+ASK_TO_SELECT_LANG = ('Which languages would you like to generate a config '
+                      'file for?\n'
+                      'Please select some languages using '
+                      'their numbers or just press \'Enter\' to select '
+                      'all of them\n')
