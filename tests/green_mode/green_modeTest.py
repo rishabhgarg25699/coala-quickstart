@@ -42,8 +42,10 @@ from coala_utils.string_processing.Core import escape
 from tests.test_bears.AllKindsOfSettingsDependentBear import (
     AllKindsOfSettingsBaseBear,
     )
+from tests.test_bears.AnotherTestLocalDepBear import AnotherTestLocalDepBear
 from tests.test_bears.TestGlobalBear import TestGlobalBear
 from tests.test_bears.TestLocalBear import TestLocalBear
+from tests.test_bears.TestLocalDepBear import TestLocalDepBear
 
 settings_key = 'green_mode_infinite_value_settings'
 
@@ -373,6 +375,49 @@ class Test_green_mode(unittest.TestCase):
         self.assertCountEqual(non_op_results[0][TestLocalBear],
                               test_non_op_results[0][TestLocalBear])
         self.assertCountEqual(unified_results, [None, None])
+
+    def test_bear_test_fun_3(self):
+        from pyprint.ConsolePrinter import ConsolePrinter
+        printer = ConsolePrinter()
+        bears = {'Python': [TestLocalDepBear]}
+        relevant_bears = {'test':
+                          {TestLocalDepBear}}
+        bear_settings_obj = collect_bear_settings(relevant_bears)
+        file_dict = {'A.py': {'a\n', 'b\n'}, 'C.py': {'c\n', 'd\n'}}
+        dir_path = str(Path(__file__).parent) + os.sep
+        contents = initialize_project_data(dir_path, [])
+        file_names = ['A.py', 'C.py']
+        non_op_results, unified_results = bear_test_fun(
+            bears, bear_settings_obj, file_dict, [], contents,
+            file_names, 1, 1, printer)
+        print('nonop:', non_op_results)
+        print('op:', unified_results)
+        test_results = [{TestLocalDepBear: []}]
+        self.assertCountEqual(non_op_results[0][TestLocalDepBear],
+                              test_results[0][TestLocalDepBear])
+        self.assertCountEqual(unified_results, [None])
+
+    def test_bear_test_fun_4(self):
+        from pyprint.ConsolePrinter import ConsolePrinter
+        printer = ConsolePrinter()
+        bears = {'Python': [AnotherTestLocalDepBear]}
+        relevant_bears = {'test':
+                          {AnotherTestLocalDepBear}}
+        bear_settings_obj = collect_bear_settings(relevant_bears)
+        file_dict = {'A.py': {'a\n', 'b\n'}, 'C.py': {'c\n', 'd\n'}}
+        dir_path = str(Path(__file__).parent) + os.sep
+        contents = initialize_project_data(dir_path, [])
+        file_names = ['A.py', 'C.py']
+        non_op_results, unified_results = bear_test_fun(
+            bears, bear_settings_obj, file_dict, [], contents,
+            file_names, 1, 1, printer)
+        print('nonop:', non_op_results)
+        print('op:', unified_results)
+        test_results = [{AnotherTestLocalDepBear: [{'filename': 'A.py'},
+                                                   {'filename': 'C.py'}]}]
+        self.assertCountEqual(non_op_results[0][AnotherTestLocalDepBear],
+                              test_results[0][AnotherTestLocalDepBear])
+        self.assertCountEqual(unified_results, [None])
 
     def test_write_coafile(self):
         from pyprint.ConsolePrinter import ConsolePrinter

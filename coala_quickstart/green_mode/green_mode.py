@@ -7,6 +7,7 @@ from pathlib import Path
 
 from coala_quickstart.generation.Utilities import (
     contained_in,
+    get_all_args,
     get_extensions,
     get_yaml_contents,
     peek,
@@ -289,13 +290,33 @@ def local_bear_test(bear, file_dict, file_names, lang, kwargs,
         values = []
 
         for vals in itertools.product(*kwargs.values()):
+
+            flag = 0
+            for dep in bear.BEAR_DEPS:
+                section = Section('dep-bear')
+                bear_obj = dep(section, None)
+                arguments = dict(zip(kwargs, vals))
+                dep_args = get_all_args(dep.run)
+                new_arguments = {}
+                for arg_ in arguments.keys():
+                    if arg_ in dep_args.keys():  # pragma: no cover
+                        new_arguments[arg_] = arguments[arg_]
+                arguments = new_arguments
+                ret_val = bear_obj.run(**arguments)
+                ret_val = [] if not ret_val else list(ret_val)
+                dep_res = check_bear_results(ret_val, ignore_ranges)
+                if not dep_res:
+                    flag = 1
+            if flag == 1:
+                continue
+
             print_val = dict(zip(kwargs, vals))
             print_val.pop('file', None)
             values.append(vals)
             section = Section('test-section-local-bear')
             bear_obj = bear(section, None)
             ret_val = bear_obj.run(**dict(zip(kwargs, vals)))
-            ret_val = list(ret_val)
+            ret_val = [] if not ret_val else list(ret_val)
             # FIXME: Multiprocessing not working on windows.
             if os.name == 'nt':  # pragma posix: no cover
                 results.append(check_bear_results(ret_val, ignore_ranges))
