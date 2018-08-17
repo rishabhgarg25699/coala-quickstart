@@ -365,12 +365,6 @@ class Test_green_mode(unittest.TestCase):
                                 [{'filename': 'A.py'},
                                  {'filename': 'C.py'}]},
                                {TestGlobalBear: [{}]}]
-        test_unified_results = [{TestLocalBear:
-                                 [{'filename': 'A.py',
-                                   'yield_results': False},
-                                  {'filename': 'C.py',
-                                   'yield_results': False}]},
-                                {TestGlobalBear: [{'yield_results': False}]}]
         self.assertCountEqual(non_op_results[1][TestGlobalBear],
                               test_non_op_results[1][TestGlobalBear])
         self.assertCountEqual(non_op_results[0][TestLocalBear],
