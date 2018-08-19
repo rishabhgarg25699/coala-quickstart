@@ -48,5 +48,5 @@ def bear_test_module():
             return PseudoPlugin()
 
     with unittest.mock.patch('pkg_resources.iter_entry_points',
-                             return_value=[EntryPoint()]) as mocked:
+                             return_value=[EntryPoint()]):
         yield
