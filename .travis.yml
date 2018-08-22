@@ -26,6 +26,9 @@ jobs:
 
 cache:
   pip: true
+  directories:
+    # coala managed data
+    - ~/nltk_data
 
 before_install:
   - pip install setuptools -U
